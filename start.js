@@ -39,7 +39,7 @@ fs.readFile('./since', function (err, timeData) {
                     console.log('time update done');
                 });
                 for (var i in objData) {
-                    dataIndex += '<h3><a href="articals/'+ i + '.html">' + objData[i]['given_title'] + '</a></h3>\r\n';
+                    dataIndex += '<h3><a href="articles/'+ i + '.html">' + objData[i]['given_title'] + '</a></h3>\r\n';
                     exec('curl ' + objData[i]['given_url'] + ' > ' + githubHome + 'articles/' + i + '.html')
                 }
                 dataIndex += '\r\n';
