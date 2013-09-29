@@ -2,27 +2,27 @@ var http = require('http');
 var qs = require('querystring');
 var post_data = {
 	consumer_key: '18912-37d0890e4e3864e0b5a0164b',
+    sort: 'newest',
 	access_token: 'fb51f73a-64f4-78a5-f157-c052ef'
 }; //这是需要提交的数据
-var content = qs.stringify(post_data);
 var fs = require('fs');
 var exec = require('child_process').exec;
 var githubHome = '/Library/WebServer/Documents/sking7.github.com/';
 //var content=qs.stringify(post_data);
-var op = {
-	host: 'getpocket.com',
-	method: 'POST',
-	path: '/v3/get',
-	headers: {
-		'Content-Type': 'application/x-www-form-urlencoded',
-		'Content-Length': content.length
-	}
-};
+var content;
 fs.readFile('./since', function (err, timeData) {
     if (err) return console.log(err);
-    console.log('time read done');
-    op.since = parseInt(timeData);
-    console.log(op);
+    post_data.since = parseInt(timeData);
+    content = qs.stringify(post_data);
+    var op = {
+        host: 'getpocket.com',
+        method: 'POST',
+        path: '/v3/get',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': content.length
+        }
+    };
     var req = http.request(op, function(res) {
         var dataList = '';
         res.on('data', function(chunk) {
@@ -33,8 +33,9 @@ fs.readFile('./since', function (err, timeData) {
                 if (err) return console.log(err);
                 console.log('read tmp done');
                 var objData = JSON.parse(dataList).list;
-                //var since = JSON.parse(dataList).since;
-                fs.writeFile('./since', new Date().getTime(), function (err) {
+                if (objData.length <= 0) return console.log('no update; done');
+                var since = JSON.parse(dataList).since;
+                fs.writeFile('./since', since, function (err) {
                     if (err) return console.log(err);
                     console.log('time update done');
                 });
@@ -49,11 +50,11 @@ fs.readFile('./since', function (err, timeData) {
                     dataIndex += data;
                     fs.writeFile(githubHome + 'index.html', dataIndex, function (err) {
                         if (err) return console.log(err);
-                        })
-                    });
-                }); 
-            })
-        });
+                        console.log('all done');
+                    })
+                });
+            }); 
+        })
     });
     req.on('error', function(e) {
         console.log('Error got: ' + e.message);
@@ -61,4 +62,3 @@ fs.readFile('./since', function (err, timeData) {
     req.write(content);
     req.end();
 });
-
