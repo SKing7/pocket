@@ -6,6 +6,7 @@ var post_data = {
 	access_token: 'fb51f73a-64f4-78a5-f157-c052ef'
 }; //这是需要提交的数据
 var fs = require('fs');
+var readability = require('./node-readability/lib/readability.js');
 var dom = require("jsdom");
 var exec = require('child_process').exec;
 var githubHome = '/Library/WebServer/Documents/sking7.github.com/';
