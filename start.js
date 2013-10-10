@@ -6,7 +6,7 @@ var post_data = {
 	access_token: 'fb51f73a-64f4-78a5-f157-c052ef'
 }; //这是需要提交的数据
 var fs = require('fs');
-var readability = require('./node-readability/lib/readability.js');
+var clear = require('./node-readability/lib/readability.js');
 var dom = require("jsdom");
 var exec = require('child_process').exec;
 var githubHome = '/Library/WebServer/Documents/sking7.github.com/';
@@ -17,12 +17,7 @@ var listTpl = '<h3>\
         <a class="real-link" href="{url}" target="_blank">Go</a>\
         <span class="time-label">[{timeAdd}]</span>\
     </h3>\r\n';
-var jsTpl = '\n<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>\n'+
-    '<script src="../js/clearly.js"></script>\n'+
-    '<script>\n'+
-        'var html = window.__getMyClearlyResults().html;\n'+
-        '$("html").html(html);\n'+
-        '$("body").append(\'<link type="text/css" href="../css/article.css">\')</script>\n';
+var resTpl = '<link rel="stylesheet" href="../css/article.css" />\n';
 
 function sub(tpl, config) {
     for (var i in config) {
@@ -102,28 +97,34 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                        if (articleList.indexOf(i + '.html') < 0) {
                            //fs.readFile(githubHome + 'artical_footer.html', function (err, dataJs) {
                                //htmlArticle += data;
-                               console.log(objTmp);
                                exec('curl ' + objTmp['given_url'], function (err, data) {
                                     console.log('curl url done');
-                                    dom.env(
-                                        data,
-                                        [],
-                                        function (errors, window) {
-                                            var div = window.document.createElement('div');
-                                            div.innerHTML = jsTpl;
-                                            window.document.body.appendChild(div)
-                                            htmlArticle += '<html>';
-                                            htmlArticle += window.document.documentElement.innerHTML;
-                                            htmlArticle += '</html>';
-                                            //fs.readFile(githubHome + 'artical_footer.html', function (err, data) {
-                                                //console.log('read foot done' + i);
-                                                //htmlArticle += data;
-                                                fs.writeFile(githubHome + 'articles/' + i + '.html', htmlArticle, function (err, data) { 
-                                                    console.log('write ready ');
-                                                }); 
-                                            //});
-                                        }
-                                    );
+                                    clear.parse(data, objTmp['given_url'], function (data) {
+                                        var result;
+                                        result = '<!doctype html>\n';
+                                        result += '<html>\n';
+                                        result += '<head>\n';
+                                        result += '\<meta\ charset="utf-8"/\>\n';
+                                        result += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n';
+                                        result += sub('<title>{title}</title>\n', {
+                                            title : data.title
+                                        });
+
+                                        result  += resTpl;
+                                        result += '</head>\n';
+                                        result += '<body>\n';
+                                        result += '<div class="m-content">\n';
+                                        result += sub('<h1>{title}</h1>\n', {
+                                            title : data.title
+                                        });
+                                        result += data.content;
+                                        result += '</div>\n';
+                                        result += '</body>\n';
+                                        result += '</html>';
+                                        fs.writeFile(githubHome + 'articles/' + i + '.html', result, 'utf8', function (err, data) { 
+                                            console.log('write ready ');
+                                        }); 
+                                    });
                                });
                            //});
                        } 
