@@ -1,3 +1,4 @@
+//exports.start =  function (callBack) {
 var http = require('http');
 var qs = require('querystring');
 var post_data = {
@@ -12,8 +13,9 @@ var exec = require('child_process').exec;
 var githubHome = '/Library/WebServer/Documents/sking7.github.com/';
 var pocketHome = '/Users/liuakira/pocket/'
 var content;
+//var listTpl = '<div data-id="{id}" class="woo"><div class="j"><div class="mbpho" style="height:266px;"><a target="_blank" class="a" href="{url}"><img data-rootid="{id}" data-iid="{id}" src="http://cdn.duitang.com/uploads/item/201303/22/20130322143937_mdf5i.thumb.200_0.jpeg" height="266"/></a></div><div class="g">{des}</div><div class="g">{timeAdd}</div></div></div>';
 var listTpl = '<h3>\
-        <a target="article" href="articles/{index}.html">{title}</a>\
+        <a target="article" href="articles/{id}.html">{title}</a>\
         <a class="real-link" href="{url}" target="_blank">Go</a>\
         <span class="time-label">[{timeAdd}]</span>\
     </h3>\r\n';
@@ -53,6 +55,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
             dataList += chunk;
         });
         res.on('end', function(e) {
+            //callBack();
             fs.writeFile(pocketHome + 'json_tpl', dataList, function () {});
             var articleList = fs.readdirSync(githubHome + 'articles/');
             //read head
@@ -72,7 +75,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     console.log('time update done');
                 });
                 //删除已经在pocket删除的文章
-                var deleteShell = 'rm';
+                var deleteShell = 'cd ' + githubHome + 'articles && rm ';
                 articleList.forEach(function (a) {
                    var tmp = a.replace('.html', '');
                    if (!objData[tmp]) {
@@ -86,10 +89,11 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     var htmlArticle = ''; 
                     var objTmp = arrData[i];
                     dataIndex += sub(listTpl, {
-                        index:  objTmp['id'],
+                        id:  objTmp['id'],
                         title : objTmp['given_title'],
                         timeAdd : getMyDate(new Date(objTmp['time_added'] * 1000)),
-                        url : objTmp['given_url']
+                        url : objTmp['given_url'],
+                        des: objTmp['excerpt']
                         
                     });
                     (function (i, objTmp, htmlArticle) {
@@ -141,7 +145,8 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                         if (err) return console.log(err);
                         console.log(deleteShell);
                         exec(deleteShell, function (err, data) {
-                            //if (err) return console.log(err);
+                            if (err) return console.log(err);
+                            console.log('rm done');
                         });
                     })
                 });
@@ -154,3 +159,4 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
     req.write(content);
     req.end();
 });
+//}
