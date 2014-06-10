@@ -76,10 +76,12 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                 });
                 //删除已经在pocket删除的文章
                 var deleteShell = 'cd ' + githubHome + 'articles && rm ';
+                var canDelete = false;
                 articleList.forEach(function (a) {
                    var tmp = a.replace('.html', '');
                    if (!objData[tmp]) {
                         deleteShell += ' ' + a;
+                        canDelete = true;
                    } 
                 });
                 arrData.sort(function (a, b) {
@@ -90,7 +92,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     var objTmp = arrData[i];
                     dataIndex += sub(listTpl, {
                         id:  objTmp['id'],
-                        title : objTmp['given_title'],
+                        title : objTmp['resolved_title'],
                         timeAdd : getMyDate(new Date(objTmp['time_added'] * 1000)),
                         url : objTmp['given_url'],
                         des: objTmp['excerpt']
@@ -123,6 +125,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                                         });
                                         result += data.content;
                                         result += '</div>\n';
+                                        result += "<script>var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34802167-1']); _gaq.push(['_setDomainName', 'liuzhe.co']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();</script>";
                                         result += '</body>\n';
                                         result += '</html>';
                                         fs.writeFile(githubHome + 'articles/' + i + '.html', result, 'utf8', function (err, data) { 
@@ -143,11 +146,13 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     //create index
                     fs.writeFile(githubHome + 'index.html', dataIndex, function (err) {
                         if (err) return console.log(err);
-                        console.log(deleteShell);
-                        exec(deleteShell, function (err, data) {
-                            if (err) return console.log(err);
-                            console.log('rm done');
-                        });
+                        if (canDelete) {
+                            console.log(deleteShell);
+                            exec(deleteShell, function (err, data) {
+                                if (err) return console.log(err);
+                                console.log('rm done');
+                            });
+                        }
                     })
                 });
             }); 

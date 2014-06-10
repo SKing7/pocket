@@ -35,16 +35,18 @@ var req = http.request(op, function(res) {
 
         for (var i in list) {
             if (list.hasOwnProperty(i)) {
-                hasUpdate = true;
-                break;
+                if (list[i].status != 2) {
+                    hasUpdate = true;
+                    break;
+                }
             }
         }
+        console.log(list);
         console.log(hasUpdate);
         if (hasUpdate) {
-            exec('echo "has update since:' + time + '" >> ~/log/pocket/getpocket.log 2>&1 && date >> ~/log/pocket/getpocket.log 2>&1');
+            exec('echo "has update since:' + time + ',list:' + list + '">> ~/log/pocket/getpocket.log 2>&1 && date >> ~/log/pocket/getpocket.log 2>&1');
             pocket.start(function () {});
             fs.writeFile(home + 'config/pocket_since', parseInt(new Date().getTime() / 1000), function (e) {
-                console.log(e);
             });
             setTimeout(function () {
                 exec('~/pocket/pullpush.sh', function (e) {
