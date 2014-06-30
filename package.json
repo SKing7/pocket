@@ -1,0 +1,10 @@
+{
+  "name": "mypromise",
+  "description": "",
+  "version": "1.0.0",
+  "devDependencies": {
+    "jsdom": "^0.11.0",
+    "node-readability": "^0.3.2",
+    "request": "^2.36.0"
+  }
+}

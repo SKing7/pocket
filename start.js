@@ -7,11 +7,11 @@ var post_data = {
 	access_token: 'fb51f73a-64f4-78a5-f157-c052ef'
 }; //这是需要提交的数据
 var fs = require('fs');
-var clear = require('./node-readability/lib/readability.js');
+var clear = require('node-readability');
 var dom = require("jsdom");
 var exec = require('child_process').exec;
-var githubHome = '/Library/WebServer/Documents/sking7.github.com/';
-var pocketHome = '/Users/liuakira/pocket/'
+var githubHome = '/Users/liuzhe/dev/sking7.github.com/';
+var pocketHome = '/Users/liuzhe/dev/pocket/'
 var content;
 //var listTpl = '<div data-id="{id}" class="woo"><div class="j"><div class="mbpho" style="height:266px;"><a target="_blank" class="a" href="{url}"><img data-rootid="{id}" data-iid="{id}" src="http://cdn.duitang.com/uploads/item/201303/22/20130322143937_mdf5i.thumb.200_0.jpeg" height="266"/></a></div><div class="g">{des}</div><div class="g">{timeAdd}</div></div></div>';
 var listTpl = '<h3>\
@@ -105,7 +105,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                                //htmlArticle += data;
                                exec('curl ' + objTmp['given_url'], function (err, data) {
                                     console.log('curl url done');
-                                    clear.parse(data, objTmp['given_url'], function (data) {
+                                    clear(objTmp['given_url'], function (err, data) {
                                         var result;
                                         result = '<!doctype html>\n';
                                         result += '<html>\n';
