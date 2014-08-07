@@ -106,6 +106,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                                exec('curl ' + objTmp['given_url'], function (err, data) {
                                     console.log('curl url done');
                                     clear(objTmp['given_url'], function (err, data) {
+                                        if (!data) return;
                                         var result;
                                         result = '<!doctype html>\n';
                                         result += '<html>\n';
