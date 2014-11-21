@@ -5,6 +5,7 @@ var post_data = {
     since: 1381470918,
 	appsInfo: 'summary'
 }; //这是需要提交的数据
+//TODO #X so ugly
 var home = '/Users/liuakira/';
 var fs = require('fs');
 fs.readFile(home + 'config/pocket_since', function (err, data) { 
