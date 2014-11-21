@@ -1,6 +1,6 @@
 //exports.start =  function (callBack) {
 //
-//TODO  #X 移到lib中
+//TODO #2 移到lib中
 var http = require('http');
 var qs = require('querystring');
 var post_data = {
