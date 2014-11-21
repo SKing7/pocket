@@ -1,4 +1,5 @@
 //exports.start =  function (callBack) {
+//TODO # 移到lib中
 var http = require('http');
 var qs = require('querystring');
 var post_data = {
@@ -13,7 +14,6 @@ var exec = require('child_process').exec;
 var githubHome = '/Users/liuzhe/dev/sking7.github.com/';
 var pocketHome = '/Users/liuzhe/dev/pocket/'
 var content;
-//var listTpl = '<div data-id="{id}" class="woo"><div class="j"><div class="mbpho" style="height:266px;"><a target="_blank" class="a" href="{url}"><img data-rootid="{id}" data-iid="{id}" src="http://cdn.duitang.com/uploads/item/201303/22/20130322143937_mdf5i.thumb.200_0.jpeg" height="266"/></a></div><div class="g">{des}</div><div class="g">{timeAdd}</div></div></div>';
 var listTpl = '<h3>\
         <a target="article" href="articles/{id}.html">{title}</a>\
         <a class="real-link" href="{url}" target="_blank">Go</a>\
