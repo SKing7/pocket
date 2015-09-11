@@ -1,7 +1,5 @@
-//exports.start =  function (callBack) {
-//
 //TODO #2 移到lib中
-var http = require('http');
+var https = require('https');
 var qs = require('querystring');
 var post_data = {
 	consumer_key: '18912-37d0890e4e3864e0b5a0164b',
@@ -50,7 +48,8 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
             'Content-Length': content.length
         }
     };
-    var req = http.request(op, function(res) {
+    var req = https.request(op, function(res) {
+        console.log(res.headers);
         var dataList = '';
         res.on('data', function(chunk) {
             dataList += chunk;
