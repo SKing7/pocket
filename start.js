@@ -1,5 +1,6 @@
 //TODO #2 移到lib中
 var https = require('https');
+var request = require('request');
 var qs = require('querystring');
 var post_data = {
 	consumer_key: '18912-37d0890e4e3864e0b5a0164b',
@@ -37,7 +38,6 @@ function getMyDate(d) {
 };
 fs.readFile(pocketHome + 'since', function (err, timeData) {
     if (err) return console.log(err);
-    //post_data.since = parseInt(timeData);
     content = qs.stringify(post_data);
     var op = {
         host: 'getpocket.com',
@@ -49,7 +49,6 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
         }
     };
     var req = https.request(op, function(res) {
-        console.log(res.headers);
         var dataList = '';
         res.on('data', function(chunk) {
             dataList += chunk;
@@ -88,6 +87,7 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     return b.time_added - a.time_added;
                 });
                 for (var i in arrData) {
+                    if (i > 10) return;
                     var htmlArticle = ''; 
                     var objTmp = arrData[i];
                     dataIndex += sub(listTpl, {
@@ -101,40 +101,35 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                     (function (i, objTmp, htmlArticle) {
                     //已经在目录存在的文章不再重复下载
                        if (articleList.indexOf(i + '.html') < 0) {
-                           //fs.readFile(githubHome + 'artical_footer.html', function (err, dataJs) {
-                               //htmlArticle += data;
-                               exec('curl ' + objTmp['given_url'], function (err, data) {
-                                    console.log('curl url done');
-                                    clear(objTmp['given_url'], function (err, data) {
-                                        if (!data) return;
-                                        var result;
-                                        result = '<!doctype html>\n';
-                                        result += '<html>\n';
-                                        result += '<head>\n';
-                                        result += '\<meta\ charset="utf-8"/\>\n';
-                                        result += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n';
-                                        result += sub('<title>{title}</title>\n', {
-                                            title : data.title
-                                        });
+                            clear(objTmp['given_url'], function (err, data) {
+                                if (!data) return;
+                                var result;
+                                result = '<!doctype html>\n';
+                                result += '<html>\n';
+                                result += '<head>\n';
+                                result += '\<meta\ charset="utf-8"/\>\n';
+                                result += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n';
+                                result += sub('<title>{title}</title>\n', {
+                                    title : data.title
+                                });
 
-                                        result  += resTpl;
-                                        result += '</head>\n';
-                                        result += '<body>\n';
-                                        result += '<div class="m-content">\n';
-                                        result += sub('<h1>{title}</h1>\n', {
-                                            title : data.title
-                                        });
-                                        result += data.content;
-                                        result += '</div>\n';
-                                        result += "<script>var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34802167-1']); _gaq.push(['_setDomainName', 'liuzhe.co']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();</script>";
-                                        result += '</body>\n';
-                                        result += '</html>';
-                                        fs.writeFile(githubHome + 'articles/' + i + '.html', result, 'utf8', function (err, data) { 
-                                            console.log('write ready ');
-                                        }); 
-                                    });
-                               });
-                           //});
+                                result  += resTpl;
+                                result += '</head>\n';
+                                result += '<body>\n';
+                                result += '<div class="m-content">\n';
+                                result += sub('<h1>{title}</h1>\n', {
+                                    title : data.title
+                                });
+                                result += data.content;
+                                result += '</div>\n';
+                                result += "<script>var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34802167-1']); _gaq.push(['_setDomainName', 'liuzhe.co']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();</script>";
+                                result += '</body>\n';
+                                result += '</html>';
+
+                                fs.writeFile(githubHome + 'articles/' + i + '.html', result, 'utf8', function (err, data) { 
+                                    console.log('write ready ');
+                                }); 
+                            });
                        } 
                    })(objTmp.id, objTmp, htmlArticle);
                 }
@@ -165,4 +160,3 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
     req.write(content);
     req.end();
 });
-//}

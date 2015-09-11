@@ -6,5 +6,8 @@
     "jsdom": "^0.11.0",
     "node-readability": "^0.3.2",
     "request": "^2.36.0"
+  },
+  "dependencies": {
+    "request": "^2.61.0"
   }
 }
