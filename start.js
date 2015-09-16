@@ -98,11 +98,15 @@ fs.readFile(pocketHome + 'since', function (err, timeData) {
                         des: objTmp['excerpt']
                         
                     });
+                    console.log('push to Queue:', objTmp['given_url']);
                     (function (i, objTmp, htmlArticle) {
                     //已经在目录存在的文章不再重复下载
                        if (articleList.indexOf(i + '.html') < 0) {
+                           console.log('requesting:', objTmp['given_url']);
                             clear(objTmp['given_url'], function (err, data) {
+                                if (err) console.log(err);
                                 if (!data) return;
+                                console.log('request done:', objTmp['given_url']);
                                 var result;
                                 result = '<!doctype html>\n';
                                 result += '<html>\n';

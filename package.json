@@ -2,12 +2,10 @@
   "name": "mypromise",
   "description": "",
   "version": "1.0.0",
-  "devDependencies": {
-    "jsdom": "^0.11.0",
-    "node-readability": "^0.3.2",
-    "request": "^2.36.0"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "request": "^2.61.0"
+    "jsdom": "^6.5.0",
+    "node-readability": "^2.1.0",
+    "request": "^2.62.0"
   }
 }
