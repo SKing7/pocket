@@ -25,6 +25,7 @@ fs.readFile(path.join(pocketHome, 'since'), function (err, timeData) {
             dataList += chunk;
         });
         res.on('end', function(e) {
+            console.log('request end');
             compose(dataList);
             //fs.writeFile(pocketHome + 'json_tpl', dataList, function () {});
         })
