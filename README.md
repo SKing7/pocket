@@ -3,8 +3,8 @@ sync data with `pocket` server
 
 ##STEPS !
 ###TOKEN
-`script/gettocken.js`
+`script/request_token.js`
 ###ACCESS TOKEN
-`script/finalauth.js`
+`script/access_token.js`
 ###UPDATE POCKET LIST 
 `index.js`
