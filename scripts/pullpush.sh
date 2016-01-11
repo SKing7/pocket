@@ -1,6 +1,8 @@
 #!/bin/sh 
-cd ~/dev/sking7.github.com
+cd ~/dev/
+gulp sw
+cd sking7.github.com
 git add .
 git pull
-git commit -a -m 'update articles'
+git commit -a -m 'update config and update articles'
 git push 
